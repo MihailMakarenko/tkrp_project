@@ -1,10 +1,11 @@
-const Task = require("../models/task");
+const TaskService = require("../services/TaskService");
+
 class TaskController {
   // Добавить новую задачу
   async addTask(req, res) {
     const { Category, Description, PhotoPath, LocationId } = req.body;
     try {
-      const newTask = await Task.create({
+      const newTask = await TaskService.addTask({
         Category,
         Description,
         PhotoPath,
@@ -19,7 +20,7 @@ class TaskController {
   // Получить все задачи
   async getAll(req, res) {
     try {
-      const tasks = await Task.findAll();
+      const tasks = await TaskService.getAllTasks();
       res.status(200).json(tasks);
     } catch (error) {
       res.status(500).json({ message: error.message });
@@ -31,18 +32,17 @@ class TaskController {
     const { id } = req.params;
     const { Category, Description, PhotoPath, LocationId } = req.body;
     try {
-      const task = await Task.findByPk(id);
-      if (!task) {
-        return res.status(404).json({ message: "Задача не найдена" });
-      }
-      // Обновление свойств задачи
-      task.Category = Category;
-      task.Description = Description;
-      task.PhotoPath = PhotoPath;
-      task.LocationId = LocationId;
-      await task.save();
-      res.status(200).json(task);
+      const updatedTask = await TaskService.updateTaskById(id, {
+        Category,
+        Description,
+        PhotoPath,
+        LocationId,
+      });
+      res.status(200).json(updatedTask);
     } catch (error) {
+      if (error.message === "Задача не найдена") {
+        return res.status(404).json({ message: error.message });
+      }
       res.status(400).json({ message: error.message });
     }
   }
@@ -51,14 +51,38 @@ class TaskController {
   async deleteTaskById(req, res) {
     const { id } = req.params;
     try {
-      const task = await Task.findByPk(id);
-      if (!task) {
-        return res.status(404).json({ message: "Задача не найдена" });
-      }
-      await task.destroy();
-      res.status(204).send(); // Успешное удаление, но без содержимого
+      await TaskService.deleteTaskById(id);
+      res.status(204).send(); // Успешное удаление
     } catch (error) {
+      if (error.message === "Задача не найдена") {
+        return res.status(404).json({ message: error.message });
+      }
       res.status(500).json({ message: error.message });
+    }
+  }
+
+  // Получить задачи по номеру комнаты
+  async getTasksByRoomNumber(req, res) {
+    const { roomNumber } = req.params;
+    try {
+      const tasks = await TaskService.getTasksByRoomNumber(roomNumber);
+      res.status(200).json(tasks);
+    } catch (error) {
+      res.status(404).json({ message: error.message });
+    }
+  }
+
+  // Получить задачи по категории
+  async getTasksByCategory(req, res) {
+    const { category } = req.params;
+    if (!category) {
+      return res.status(400).json({ message: "Необходимо указать категорию" });
+    }
+    try {
+      const tasks = await TaskService.getTasksByCategory(category);
+      res.status(200).json(tasks);
+    } catch (error) {
+      res.status(404).json({ message: error.message });
     }
   }
 }

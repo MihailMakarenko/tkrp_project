@@ -3,7 +3,8 @@ const router = new Router();
 const userController = require("../controllers/userController");
 
 router.get("/login", userController.login);
-router.post("/registration", userController.regestration);
+router.get("/getUserById/:id", userController.getUserById);
+router.post("/", userController.registration);
 router.get("/", userController.getAll);
 router.put("/:id", userController.updateUserById);
 router.delete("/:id", userController.deleteUserById);

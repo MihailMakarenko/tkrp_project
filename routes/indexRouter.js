@@ -11,7 +11,7 @@ const task = require("./taskRouter");
 const user = require("./userRouter");
 
 router.use("/comment", comment);
-router.use("/historyUser", historyUser);
+router.use("/historyUser", historyUser); // добавить записи в бд
 router.use("/location", location);
 router.use("/notification", notification);
 router.use("/request", request);
@@ -19,4 +19,4 @@ router.use("/requestHistory", requestHistory);
 router.use("/task", task);
 router.use("/user", user);
 
-module.export = router;
+module.exports = router;

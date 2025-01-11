@@ -1,24 +1,31 @@
 require("dotenv").config();
 const express = require("express"); //импорт модуля
-const sequelize = require("./db.js"); //импорт настроек БД
 const cors = require("cors");
-// const router = require("./routes/indexRouter.js");
-const models = require("./models/index.js");
-const passport = require("passport");
+const router = require("./routes/indexRouter.js");
+const swaggerUi = require("swagger-ui-express");
+const YAML = require("yamljs");
+const path = require("path");
+const seedDatabase = require("./seed/seedDatabase.js");
+// const passport = require("passport");
 
 const PORT = process.env.PORT; //порт, на котором работает сервер
 
+// Загружаем спецификацию Swagger
+
 const app = express(); //создаем объект express
+const swaggerDocument = YAML.load(path.join(__dirname, "swagger.yaml"));
+
+// Настраиваем Swagger
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use(cors());
 app.use(express.json());
-// app.use("/api", router);
+app.use("/api", router);
 // app.use(passport.initialize());
 // require("./middleware/passport")(passport);
 
 const start = async () => {
   try {
-    await sequelize.authenticate(); //подключение к БД
-    await sequelize.sync(); //сверка состояния БД со схемой БД
+    await seedDatabase();
 
     app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
   } catch (e) {

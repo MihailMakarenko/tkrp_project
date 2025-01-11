@@ -1,0 +1,52 @@
++# API для работы с комментариями
++POST /api/comment
++GET /api/comment
++PUT /api/comment/{id}
++DELETE /api/comment/{id}
+
+# API для работы с местоположениями
++POST /api/location
++GET /api/location
++PUT /api/location/{id}
++DELETE /api/location/{id}
+
+# API для работы с уведомлениями
++POST /api/notification
++GET /api/notification
++PUT /api/notification/{id}
++DELETE /api/notification/{id}
+
+# API для работы с историей запросов
++POST /api/request-history
++GET /api/request-history
++PUT /api/request-history/{id}
++DELETE /api/request-history/{id}
+
+
+# API для работы с пользователями
++POST /api/user
++GET /api/user
++PUT /api/user/{id}
++DELETE /api/user/{id}
+
+# API для работы с задачами
+POST /api/task
++GET /api/task
+PUT /api/task/{id}
++DELETE /api/task/{id}
+
+
+# API для работы с историей пользователей
+POST /api/historyUser
++GET /api/historyUser
+PUT /api/historyUser/{id}
++DELETE /api/historyUser/{id}
+
+# API для работы с запросами
+POST /api/request
++GET /api/request
+PUT /api/request/{id}
++DELETE /api/request/{id}
+
+
+

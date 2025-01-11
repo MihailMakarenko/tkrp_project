@@ -1,0 +1,1639 @@
+openapi: 3.0.0
+info:
+  title: API Example
+  description: Пример API для работы с комментариями, местоположениями, уведомлениями, историей запросов и другими сущностями
+  version: 1.0.0
+
+paths:
+  /api/comment:
+    post:
+      summary: Создать новый комментарий
+      tags:
+        - Комментарии
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                Text:
+                  type: string
+                DateTime:
+                  type: string
+                  format: date-time
+                UserId:
+                  type: integer
+                RequestId:
+                  type: integer
+      responses:
+        "201":
+          description: Комментарий успешно создан
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+        "400":
+          description: Неверный запрос
+
+    get:
+      summary: Получить все комментарии
+      tags:
+        - Комментарии
+      responses:
+        "200":
+          description: Успешный ответ с массивом комментариев
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    Text:
+                      type: string
+                    DateTime:
+                      type: string
+                      format: date-time
+                    UserId:
+                      type: integer
+                    RequestId:
+                      type: integer
+
+  /api/comment/{id}:
+    put:
+      summary: Обновить комментарий по ID
+      tags:
+        - Комментарии
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID комментария
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                Text:
+                  type: string
+                DateTime:
+                  type: string
+                  format: date-time
+                UserId:
+                  type: integer
+                RequestId:
+                  type: integer
+      responses:
+        "200":
+          description: Комментарий успешно обновлен
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+        "400":
+          description: Неверный запрос
+        "404":
+          description: Комментарий не найден
+
+    delete:
+      summary: Удалить комментарий по ID
+      tags:
+        - Комментарии
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID комментария
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Комментарий успешно удален
+        "404":
+          description: Комментарий не найден
+
+  /api/comment/getCommentsByUserId/{userId}:
+    get:
+      summary: Получить все комментарии пользователя по его UserId
+      tags:
+        - Комментарии
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: ID пользователя
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Успешный ответ с массивом комментариев
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    CommentId:
+                      type: integer
+                    Text:
+                      type: string
+                    DateTime:
+                      type: string
+                      format: date-time
+                    UserId:
+                      type: integer
+                    RequestId:
+                      type: integer
+        "404":
+          description: Комментариев не найдено для этого пользователя
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Комментариев не найдено для этого пользователя"
+        "500":
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+  /api/comment/getCommentsByRequestId/{requestId}:
+    get:
+      summary: Получить все комментарии по RequestId
+      tags:
+        - Комментарии
+      parameters:
+        - name: requestId
+          in: path
+          required: true
+          description: ID запроса, для которого нужно получить комментарии
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Успешный ответ с массивом комментариев
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    CommentId:
+                      type: integer
+                    Text:
+                      type: string
+                    DateTime:
+                      type: string
+                      format: date-time
+                    UserId:
+                      type: integer
+                    RequestId:
+                      type: integer
+        "404":
+          description: Комментариев не найдено для данного RequestId
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Комментариев не найдено для данного RequestId"
+        "500":
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+  /api/location:
+    post:
+      summary: Добавить новое местоположение
+      tags:
+        - Местоположения
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                CorpsNumber:
+                  type: integer
+                HullNumber:
+                  type: integer
+                RoomNumber:
+                  type: integer
+      responses:
+        "201":
+          description: Местоположение успешно создано
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+        "400":
+          description: Неверный запрос
+
+    get:
+      summary: Получить все местоположения
+      tags:
+        - Местоположения
+      responses:
+        "200":
+          description: Успешный ответ с массивом местоположений
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    CorpsNumber:
+                      type: integer
+                    HullNumber:
+                      type: integer
+                    RoomNumber:
+                      type: integer
+
+  /api/location/{id}:
+    put:
+      summary: Обновить местоположение по ID
+      tags:
+        - Местоположения
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID местоположения
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                CorpsNumber:
+                  type: string
+                HullNumber:
+                  type: string
+                RoomNumber:
+                  type: string
+      responses:
+        "200":
+          description: Местоположение успешно обновлено
+        "400":
+          description: Неверный запрос
+        "404":
+          description: Местоположение не найдено
+
+    delete:
+      summary: Удалить местоположение по ID
+      tags:
+        - Местоположения
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID местоположения
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Местоположение успешно удалено
+        "404":
+          description: Местоположение не найдено
+
+  /api/notification:
+    post:
+      summary: Добавить новое уведомление
+      tags:
+        - Уведомления
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                Message:
+                  type: string
+                DateTime:
+                  type: string
+                  format: date-time
+                UserId:
+                  type: integer
+      responses:
+        "201":
+          description: Уведомление успешно создано
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  Message:
+                    type: string
+                  DateTime:
+                    type: string
+                    format: date-time
+                  UserId:
+                    type: integer
+        "400":
+          description: Неверный запрос
+
+    get:
+      summary: Получить все уведомления
+      tags:
+        - Уведомления
+      responses:
+        "200":
+          description: Успешный ответ с массивом уведомлений
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    Message:
+                      type: string
+                    DateTime:
+                      type: string
+                      format: date-time
+                    UserId:
+                      type: integer
+
+  /api/notification/{id}:
+    put:
+      summary: Обновить уведомление по ID
+      tags:
+        - Уведомления
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID уведомления
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                Message:
+                  type: string
+                DateTime:
+                  type: string
+                  format: date-time
+                UserId:
+                  type: integer
+      responses:
+        "200":
+          description: Уведомление успешно обновлено
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  Message:
+                    type: string
+                  DateTime:
+                    type: string
+                    format: date-time
+                  UserId:
+                    type: integer
+        "400":
+          description: Неверный запрос
+        "404":
+          description: Уведомление не найдено
+
+    delete:
+      summary: Удалить уведомление по ID
+      tags:
+        - Уведомления
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID уведомления
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Уведомление успешно удалено
+        "404":
+          description: Уведомление не найдено
+
+  /api/requestHistory:
+    post:
+      summary: Добавить новую запись истории запроса
+      tags:
+        - История запросов
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                RequestId:
+                  type: integer
+                UserId:
+                  type: integer
+                Description:
+                  type: string
+      responses:
+        "201":
+          description: Запись истории запроса успешно создана
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  RequestId:
+                    type: integer
+                  UserId:
+                    type: integer
+                  Description:
+                    type: string
+        "400":
+          description: Неверный запрос
+
+    get:
+      summary: Получить все записи истории запросов
+      tags:
+        - История запросов
+      responses:
+        "200":
+          description: Успешный ответ с массивом записей истории запросов
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    RequestId:
+                      type: integer
+                    UserId:
+                      type: integer
+                    Description:
+                      type: string
+
+  /api/requestHistory/{id}:
+    put:
+      summary: Обновить запись истории запроса по ID
+      tags:
+        - История запросов
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID записи истории запроса
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                RequestId:
+                  type: integer
+                UserId:
+                  type: integer
+                Description:
+                  type: string
+      responses:
+        "200":
+          description: Запись истории запроса успешно обновлена
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  RequestId:
+                    type: integer
+                  UserId:
+                    type: integer
+                  Description:
+                    type: string
+        "400":
+          description: Неверный запрос
+        "404":
+          description: Запись истории запроса не найдена
+
+    delete:
+      summary: Удалить запись истории запроса по ID
+      tags:
+        - История запросов
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID записи истории запроса
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Запись истории запроса успешно удалена
+        "404":
+          description: Запись истории запроса не найдена
+
+  /api/user:
+    post:
+      summary: Создать нового пользователя
+      tags:
+        - Пользователи
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                Email:
+                  type: string
+                  default: "example@example.com"
+                FirstName:
+                  type: string
+                  default: "Имя пользователя"
+                SecondName:
+                  type: string
+                  default: "Отчество"
+                LastName:
+                  type: string
+                  default: "Фамилия"
+                Password:
+                  type: string
+                  default: "Пароль123"
+                PhoneNumber:
+                  type: string
+                  default: "+7 (123) 456-78-90"
+                Role:
+                  type: string
+                  default: "user"
+                StatusNow:
+                  type: string
+                  default: "активен"
+      responses:
+        "201":
+          description: Пользователь успешно создан
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  Name:
+                    type: string
+                  Email:
+                    type: string
+        "400":
+          description: Неверный запрос
+
+    get:
+      summary: Получить всех пользователей
+      tags:
+        - Пользователи
+      responses:
+        "200":
+          description: Успешный ответ с массивом пользователей
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    Name:
+                      type: string
+                    Email:
+                      type: string
+
+  /api/user/{id}:
+    put:
+      summary: Обновить пользователя по ID
+      tags:
+        - Пользователи
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID пользователя
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                Email:
+                  type: string
+                  default: "example@example.com"
+                FirstName:
+                  type: string
+                  default: "Имя пользователя"
+                SecondName:
+                  type: string
+                  default: "Отчество"
+                LastName:
+                  type: string
+                  default: "Фамилия"
+                Password:
+                  type: string
+                  default: "Пароль123"
+                PhoneNumber:
+                  type: string
+                  default: "+7 (123) 456-78-90"
+                Role:
+                  type: string
+                  default: "user"
+                StatusNow:
+                  type: string
+                  default: "активен"
+      responses:
+        "200":
+          description: Пользователь успешно обновлен
+        "400":
+          description: Неверный запрос
+        "404":
+          description: Пользователь не найден
+
+    delete:
+      summary: Удалить пользователя по ID
+      tags:
+        - Пользователи
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID пользователя
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Пользователь успешно удален
+        "404":
+          description: Пользователь не найден
+
+  /api/task:
+    post:
+      summary: Создать новую задачу
+      tags:
+        - Задачи
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                Title:
+                  type: string
+                Description:
+                  type: string
+                UserId:
+                  type: integer
+      responses:
+        "201":
+          description: Задача успешно создана
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  Title:
+                    type: string
+                  Description:
+                    type: string
+                  UserId:
+                    type: integer
+        "400":
+          description: Неверный запрос
+
+    get:
+      summary: Получить все задачи
+      tags:
+        - Задачи
+      responses:
+        "200":
+          description: Успешный ответ с массивом задач
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    Title:
+                      type: string
+                    Description:
+                      type: string
+                    UserId:
+                      type: integer
+
+  /api/task/{id}:
+    put:
+      summary: Обновить задачу по ID
+      tags:
+        - Задачи
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID задачи
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                Title:
+                  type: string
+                Description:
+                  type: string
+                UserId:
+                  type: integer
+      responses:
+        "200":
+          description: Задача успешно обновлена
+        "400":
+          description: Неверный запрос
+        "404":
+          description: Задача не найдена
+
+    delete:
+      summary: Удалить задачу по ID
+      tags:
+        - Задачи
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID задачи
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Задача успешно удалена
+        "404":
+          description: Задача не найдена
+
+  /api/task/getTasksByRoomNumber/{roomNumber}:
+    get:
+      summary: Получить все задачи по номеру аудитории
+      tags:
+        - Задачи
+      parameters:
+        - name: roomNumber
+          in: path
+          required: true
+          description: Номер аудитории, для которой нужно получить задачи
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Успешный ответ с массивом задач
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    TaskId:
+                      type: integer
+                    Category:
+                      type: string
+                    Description:
+                      type: string
+                    PhotoPath:
+                      type: string
+                    LocationId:
+                      type: integer
+        "404":
+          description: Задач не найдено для данной аудитории
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Задач не найдено для данной комнаты"
+        "500":
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+  /api/historyUser:
+    post:
+      summary: Добавить новую запись истории пользователя
+      tags:
+        - История пользователей
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                UserId:
+                  type: integer
+                Action:
+                  type: string
+                Timestamp:
+                  type: string
+                  format: date-time
+      responses:
+        "201":
+          description: Запись истории пользователя успешно создана
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  UserId:
+                    type: integer
+                  Action:
+                    type: string
+                  Timestamp:
+                    type: string
+                    format: date-time
+        "400":
+          description: Неверный запрос
+
+    get:
+      summary: Получить все записи истории пользователей
+      tags:
+        - История пользователей
+      responses:
+        "200":
+          description: Успешный ответ с массивом записей истории пользователей
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    UserId:
+                      type: integer
+                    Action:
+                      type: string
+                    Timestamp:
+                      type: string
+                      format: date-time
+
+  /api/historyUser/{id}:
+    put:
+      summary: Обновить запись истории пользователя по ID
+      tags:
+        - История пользователей
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID записи истории пользователя
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                UserId:
+                  type: integer
+                Action:
+                  type: string
+                Timestamp:
+                  type: string
+                  format: date-time
+      responses:
+        "200":
+          description: Запись истории пользователя успешно обновлена
+        "400":
+          description: Неверный запрос
+        "404":
+          description: Запись истории пользователя не найдена
+
+    delete:
+      summary: Удалить запись истории пользователя по ID
+      tags:
+        - История пользователей
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID записи истории пользователя
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Запись истории пользователя успешно удалена
+        "404":
+          description: Запись истории пользователя не найдена
+
+  /api/request:
+    post:
+      summary: Добавить новый запрос
+      tags:
+        - Запросы
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                Title:
+                  type: string
+                Description:
+                  type: string
+                UserId:
+                  type: integer
+                Status:
+                  type: string
+      responses:
+        "201":
+          description: Запрос успешно создан
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  Title:
+                    type: string
+                  Description:
+                    type: string
+                  UserId:
+                    type: integer
+                  Status:
+                    type: string
+        "400":
+          description: Неверный запрос
+
+    get:
+      summary: Получить все запросы
+      tags:
+        - Запросы
+      responses:
+        "200":
+          description: Успешный ответ с массивом запросов
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    Title:
+                      type: string
+                    Description:
+                      type: string
+                    UserId:
+                      type: integer
+                    Status:
+                      type: string
+
+  /api/request/{id}:
+    put:
+      summary: Обновить запрос по ID
+      tags:
+        - Запросы
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID запроса
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                Title:
+                  type: string
+                Description:
+                  type: string
+                UserId:
+                  type: integer
+                Status:
+                  type: string
+      responses:
+        "200":
+          description: Запрос успешно обновлен
+        "400":
+          description: Неверный запрос
+        "404":
+          description: Запрос не найден
+
+    delete:
+      summary: Удалить запрос по ID
+      tags:
+        - Запросы
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID запроса
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Запрос успешно удален
+        "404":
+          description: Запрос не найден
+
+  /api/request/date-range:
+    get:
+      summary: Получить все запросы за указанный период
+      tags:
+        - Запросы
+      parameters:
+        - name: startDate
+          in: query
+          required: true
+          description: Начальная дата в формате YYYY-MM-DD
+          schema:
+            type: string
+            format: date
+        - name: endDate
+          in: query
+          required: true
+          description: Конечная дата в формате YYYY-MM-DD
+          schema:
+            type: string
+            format: date
+      responses:
+        "200":
+          description: Успешный ответ с массивом запросов
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    RequestId:
+                      type: integer
+                    RequestPriority:
+                      type: string
+                    DateTime:
+                      type: string
+                      format: date-time
+                    RequestStatus:
+                      type: string
+                    TaskId:
+                      type: integer
+                    UserId:
+                      type: integer
+        "400":
+          description: Ошибка запроса, если не указаны даты
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Необходимо указать начальную и конечную даты"
+        "404":
+          description: Запросов не найдено за указанный период
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Запросов не найдено за указанный период"
+        "500":
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+  /api/historyUser/getHistoryByUserId/{userId}:
+    get:
+      summary: Получить историю действий по ChangeableUserID
+      tags:
+        - История пользователей
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: Идентификатор пользователя, для которого нужно получить историю действий
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Успешный ответ с массивом записей истории действий
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    HistoryUserId:
+                      type: integer
+                    ActionType:
+                      type: string
+                    ActionTime:
+                      type: string
+                      format: date-time
+                    ChangeableUserID:
+                      type: integer
+                    AdminUserID:
+                      type: integer
+        "400":
+          description: Ошибка запроса, если не указан ChangeableUserID
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Необходимо указать ChangeableUserID"
+        "404":
+          description: История не найдена для данного пользователя
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "История не найдена для данного пользователя"
+        "500":
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+  /api/notification/getNotificationsByUserId/{userId}:
+    get:
+      summary: Получить все уведомления по UserId
+      tags:
+        - Уведомления
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: Идентификатор пользователя, для которого нужно получить уведомления
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Успешный ответ с массивом уведомлений
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    NotificationId:
+                      type: integer
+                    Message:
+                      type: string
+                    DateTime:
+                      type: string
+                      format: date-time
+                    UserId:
+                      type: integer
+        "400":
+          description: Ошибка запроса, если не указан UserId
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Необходимо указать UserId"
+        "404":
+          description: Уведомлений не найдено для данного пользователя
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Уведомлений не найдено для данного пользователя"
+        "500":
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+  /api/user/getUserById/{id}:
+    get:
+      summary: Получить пользователя по ID
+      tags:
+        - Пользователи
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Идентификатор пользователя, информацию о котором нужно получить
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Успешный ответ с информацией о пользователе
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  Email:
+                    type: string
+                  FirstName:
+                    type: string
+                  SecondName:
+                    type: string
+                    nullable: true
+                  LastName:
+                    type: string
+                  Password:
+                    type: string
+                    description: "Пароль (не рекомендуется возвращать в ответе)"
+                  PhoneNumber:
+                    type: string
+                    nullable: true
+                  Role:
+                    type: string
+                  StatusNow:
+                    type: string
+        "400":
+          description: Ошибка запроса, если не указан ID пользователя
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Необходимо указать ID пользователя"
+        "404":
+          description: Пользователь не найден
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Пользователь не найден"
+        "500":
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+  /api/request/getRequestsByUserId/{userId}:
+    get:
+      summary: Получить запросы по UserId
+      tags:
+        - Запросы
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: Идентификатор пользователя, для которого нужно получить запросы
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Успешный ответ с массивом запросов
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    RequestId:
+                      type: integer
+                    RequestPriority:
+                      type: string
+                    DateTime:
+                      type: string
+                      format: date-time
+                    RequestStatus:
+                      type: string
+                    TaskId:
+                      type: integer
+                    UserId:
+                      type: integer
+        "400":
+          description: Ошибка запроса, если не указан UserId
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Необходимо указать UserId"
+        "404":
+          description: Запросы не найдены для данного пользователя
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Запросы не найдены для данного пользователя"
+        "500":
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+  /api/comment/getCommentById/{commentId}:
+    get:
+      summary: Получить комментарий по CommentId
+      tags:
+        - Комментарии
+      parameters:
+        - name: commentId
+          in: path
+          required: true
+          description: Идентификатор комментария, информацию о котором нужно получить
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Успешный ответ с информацией о комментарии
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  CommentId:
+                    type: integer
+                  Text:
+                    type: string
+                  DateTime:
+                    type: string
+                    format: date-time
+                  UserId:
+                    type: integer
+                  RequestId:
+                    type: integer
+        "400":
+          description: Ошибка запроса, если не указан CommentId
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Необходимо указать CommentId"
+        "404":
+          description: Комментарий не найден
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Комментарий не найден"
+        "500":
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+  /api/notification/getNotificationById/{notificationId}:
+    get:
+      summary: Получить уведомление по NotificationId
+      tags:
+        - Уведомления
+      parameters:
+        - name: notificationId
+          in: path
+          required: true
+          description: Идентификатор уведомления, информацию о котором нужно получить
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Успешный ответ с информацией об уведомлении
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  NotificationId:
+                    type: integer
+                  Message:
+                    type: string
+                  DateTime:
+                    type: string
+                    format: date-time
+                  UserId:
+                    type: integer
+        "400":
+          description: Ошибка запроса, если не указан NotificationId
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Необходимо указать NotificationId"
+        "404":
+          description: Уведомление не найдено
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Уведомление не найдено"
+        "500":
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+  /api/task/getTasksByCategory/{category}:
+    get:
+      summary: Получить задачи по категории
+      tags:
+        - Задачи
+      parameters:
+        - name: category
+          in: path
+          required: true
+          description: Категория задач, которые нужно получить
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Успешный ответ с массивом задач
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    TaskId:
+                      type: integer
+                    Category:
+                      type: string
+                    Description:
+                      type: string
+                    PhotoPath:
+                      type: string
+                      nullable: true
+                    LocationId:
+                      type: integer
+        "400":
+          description: Ошибка запроса, если не указана категория
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Необходимо указать категорию"
+        "404":
+          description: Задачи не найдены для данной категории
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Задачи не найдены для данной категории"
+        "500":
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string

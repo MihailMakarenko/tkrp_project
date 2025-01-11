@@ -1,11 +1,11 @@
-const Location = require("../models/location");
+const LocationService = require("../services/LocationService");
 
 class LocationController {
   // Добавить новое местоположение
   async addLocation(req, res) {
     const { CorpsNumber, HullNumber, RoomNumber } = req.body;
     try {
-      const newLocation = await Location.create({
+      const newLocation = await LocationService.addLocation({
         CorpsNumber,
         HullNumber,
         RoomNumber,
@@ -19,7 +19,7 @@ class LocationController {
   // Получить все местоположения
   async getAll(req, res) {
     try {
-      const locations = await Location.findAll();
+      const locations = await LocationService.getAllLocations();
       res.status(200).json(locations);
     } catch (error) {
       res.status(500).json({ message: error.message });
@@ -31,17 +31,16 @@ class LocationController {
     const { id } = req.params;
     const { CorpsNumber, HullNumber, RoomNumber } = req.body;
     try {
-      const location = await Location.findByPk(id);
-      if (!location) {
-        return res.status(404).json({ message: "Местоположение не найдено" });
-      }
-      // Обновление свойств местоположения
-      location.CorpsNumber = CorpsNumber;
-      location.HullNumber = HullNumber;
-      location.RoomNumber = RoomNumber;
-      await location.save();
-      res.status(200).json(location);
+      const updatedLocation = await LocationService.updateLocationById(id, {
+        CorpsNumber,
+        HullNumber,
+        RoomNumber,
+      });
+      res.status(200).json(updatedLocation);
     } catch (error) {
+      if (error.message === "Местоположение не найдено") {
+        return res.status(404).json({ message: error.message });
+      }
       res.status(400).json({ message: error.message });
     }
   }
@@ -50,13 +49,12 @@ class LocationController {
   async deleteLocationById(req, res) {
     const { id } = req.params;
     try {
-      const location = await Location.findByPk(id);
-      if (!location) {
-        return res.status(404).json({ message: "Местоположение не найдено" });
-      }
-      await location.destroy();
-      res.status(204).send(); // Успешное удаление, но без содержимого
+      await LocationService.deleteLocationById(id);
+      res.status(204).send(); // Успешное удаление
     } catch (error) {
+      if (error.message === "Местоположение не найдено") {
+        return res.status(404).json({ message: error.message });
+      }
       res.status(500).json({ message: error.message });
     }
   }

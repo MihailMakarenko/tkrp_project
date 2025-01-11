@@ -1,11 +1,11 @@
-const RequestHistory = require("../models/requestHistory");
+const RequestHistoryService = require("../services/RequestHistoryService");
 
 class RequestHistoryController {
   // Добавить новую запись истории запроса
   async addRequestHistory(req, res) {
     const { RequestId, UserId, Description } = req.body;
     try {
-      const newRequestHistory = await RequestHistory.create({
+      const newRequestHistory = await RequestHistoryService.addRequestHistory({
         RequestId,
         UserId,
         Description,
@@ -19,7 +19,8 @@ class RequestHistoryController {
   // Получить все записи истории запросов
   async getAll(req, res) {
     try {
-      const requestHistories = await RequestHistory.findAll();
+      const requestHistories =
+        await RequestHistoryService.getAllRequestHistories();
       res.status(200).json(requestHistories);
     } catch (error) {
       res.status(500).json({ message: error.message });
@@ -31,19 +32,17 @@ class RequestHistoryController {
     const { id } = req.params;
     const { RequestId, UserId, Description } = req.body;
     try {
-      const requestHistory = await RequestHistory.findByPk(id);
-      if (!requestHistory) {
-        return res
-          .status(404)
-          .json({ message: "Запись истории запроса не найдена" });
-      }
-      // Обновление свойств записи истории запроса
-      requestHistory.RequestId = RequestId;
-      requestHistory.UserId = UserId;
-      requestHistory.Description = Description;
-      await requestHistory.save();
-      res.status(200).json(requestHistory);
+      const updatedRequestHistory =
+        await RequestHistoryService.updateRequestHistoryById(id, {
+          RequestId,
+          UserId,
+          Description,
+        });
+      res.status(200).json(updatedRequestHistory);
     } catch (error) {
+      if (error.message === "Запись истории запроса не найдена") {
+        return res.status(404).json({ message: error.message });
+      }
       res.status(400).json({ message: error.message });
     }
   }
@@ -52,15 +51,12 @@ class RequestHistoryController {
   async deleteRequestHistoryById(req, res) {
     const { id } = req.params;
     try {
-      const requestHistory = await RequestHistory.findByPk(id);
-      if (!requestHistory) {
-        return res
-          .status(404)
-          .json({ message: "Запись истории запроса не найдена" });
-      }
-      await requestHistory.destroy();
-      res.status(204).send(); // Успешное удаление, но без содержимого
+      await RequestHistoryService.deleteRequestHistoryById(id);
+      res.status(204).send(); // Успешное удаление
     } catch (error) {
+      if (error.message === "Запись истории запроса не найдена") {
+        return res.status(404).json({ message: error.message });
+      }
       res.status(500).json({ message: error.message });
     }
   }
